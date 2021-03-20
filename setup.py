@@ -17,6 +17,7 @@ setup(
     description='Simple Stockx Api for python 3',
     long_description=README,
     long_description_content_type='text/markdown',
+    url='https://github.com/EduardoHerreraM/stockx-wrapper-py',
     author='EduardoHerreraM',
     packages=find_packages(exclude=['tests']),
     classifiers=[
