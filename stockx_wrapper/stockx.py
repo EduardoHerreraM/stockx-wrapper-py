@@ -1,5 +1,6 @@
 import json
 import requests
+import datetime
 
 from stockx_wrapper import settings as st
 
@@ -17,28 +18,32 @@ class Stockx:
             'accept-language': 'en-US'
         }
 
-    def __get(self, url):
+    def __get(self, url, params=None):
         """
         Perform a http get request.
 
         :param url: str
+        :param params: dict, optional
+
         :return: dict
             Json format
         """
-        response = requests.get(url, headers=self.headers)
+        response = requests.get(url, headers=self.headers, params=params)
         data = json.loads(response.content)
         return data
 
-    def __post(self, url, body):
+    def __post(self, url, params=None, body=None):
         """
         Perform a http post request.
 
-        :param url:
-        :param body:
+        :param url: str
+        :param params: dict, optional
+        :param body: dict, optional
+
         :return:
         """
 
-        response = requests.post(url, headers=self.headers, json=body)
+        response = requests.post(url, headers=self.headers, params=params, json=body)
         data = json.loads(response.content)
         return data
 
@@ -53,13 +58,19 @@ class Stockx:
             Currency to get. Tested with 'USD' and 'EUR'.
         :param output_keys: list, optional
             List of strings. If not empty, return dict will contain just these keys.
+
         :return: dict
             Json format. Product info.
         """
 
         # Format url and get data
-        url = f'{st.GET_PRODUCT}/{product_id}?includes=market&currency={currency}&country={country}'
-        data = self.__get(url)
+        url = f'{st.GET_PRODUCT}/{product_id}'
+        params = {
+            'includes': 'market',
+            'currency': currency,
+            'country': country
+        }
+        data = self.__get(url=url, params=params)
         product = data.get('Product')
 
         if not product:
@@ -75,12 +86,57 @@ class Stockx:
 
         return return_data
 
+    def get_product_price_data(self, product_id, start_date='all', end_date=datetime.date.today().strftime('%Y-%m-%d'),
+                               intervals=100, country='US', currency='USD'):
+        """
+        Get product price chart. Average price over time.
+
+        :param product_id: str
+        :param start_date: str, optional
+            Has to be 'all' or 'YYYY-mm-dd' format.
+        :param end_date: str, optional
+            Has to be 'YYYY-mm-dd' format.
+        :param intervals: str, optional
+            Number of rows to get. Time between data returned decreases as this param increases.
+        :param country: str, optional
+            Country for focusing market information.
+        :param currency: str, optional
+            Currency to get. Tested with 'USD' and 'EUR'.
+
+        :return: list of dicts
+
+        """
+
+        url = f'{st.GET_PRODUCT}/{product_id}/chart'
+        params = {
+            'start_date': start_date,
+            'end_date': end_date,
+            'intervals': intervals,
+            'currency': currency,
+            'country': country
+        }
+        data = self.__get(url=url, params=params)
+
+        if not data:
+            return None
+
+        return_data = []
+
+        for price, date_interval in zip(data['series'][0]['data'], data['xAxis']['categories']):
+            return_data.append({
+                'avgPrice': price,
+                'dateInterval': date_interval
+            })
+
+        return return_data
+
     def get_product_specific_size(self, product_id, size):
         """
         Get child product from product id with specified size in US size localization.
 
         :param product_id: str
         :param size: str
+
         :return: dict
             Json format. Product info with specified size.
         """
@@ -100,6 +156,7 @@ class Stockx:
         Search by product name.
 
         :param product_name: str
+
         :return: dict
             First hit
         """
@@ -108,8 +165,13 @@ class Stockx:
         product_name = product_name.replace(' ', '%20')
 
         # Format url and get data
-        url = f'{st.SEARCH_PRODUCTS}?&page=1&_search={product_name}&dataType=product'
-        data = self.__get(url)
+        url = st.SEARCH_PRODUCTS
+        params = {
+            'page': '1',
+            '_search': product_name,
+            'dataType': 'product'
+        }
+        data = self.__get(url=url, params=params)
         products = data.get('Products')
 
         if products:
@@ -120,9 +182,10 @@ class Stockx:
 
     def search_products_new_api(self, product_name):
         """
-        Uses new API from Algolia.
+        Uses new API from Algolia. NOT WORKING FOR NOW.
 
         :param product_name:
+
         :return:
         """
         # Replace spaces to hexadecimal
