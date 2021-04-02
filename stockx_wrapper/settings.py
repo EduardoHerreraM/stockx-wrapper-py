@@ -9,11 +9,3 @@ ALGOLIA_URL = (
 # End points
 GET_PRODUCT = f'{API_URL}/products'
 SEARCH_PRODUCTS = f'{API_URL}/browse'
-CHART_DATA = 'chart'
-SOLD_DATA = 'activity'
-
-# Limits
-SOLD_DATA_LIMIT = 250
-
-# States
-SOLD_STATE = 480

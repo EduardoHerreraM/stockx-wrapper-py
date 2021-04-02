@@ -21,13 +21,9 @@ class Product:
 
     def get_specific_size(self, size):
         """
-        Iterate through product children searching for specific size.
 
         :param size: str
-            Size in US format (Ex: 9)
-
-        :return: Product
-            Product data.
+        :return:
         """
 
         for child_id, child_data in self.children.items():

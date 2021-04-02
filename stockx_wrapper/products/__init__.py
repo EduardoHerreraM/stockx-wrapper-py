@@ -16,8 +16,8 @@ class Products:
         :param currency: str, optional
             Currency to get. Tested with 'USD' and 'EUR'.
 
-        :return: Product
-            Product info.
+        :return: dict
+            Json format. Product info.
         """
 
         # Format url and get data
@@ -30,10 +30,10 @@ class Products:
         data = requester.get(url=url, params=params)
         _product = data.get('Product')
 
-        if _product:
-            return Product(product_data=_product)
+        if not _product:
+            return None
 
-        return None
+        return Product(product_data=_product)
 
     def search_products(self, product_name, country='US', currency='USD'):
         """
@@ -45,8 +45,8 @@ class Products:
         :param currency: str, optional
             Currency to get. Tested with 'USD' and 'EUR'.
 
-        :return: Product
-            Product info. First hit.
+        :return: dict
+            First hit
         """
 
         # Replace spaces to hexadecimal
@@ -77,8 +77,7 @@ class Products:
 
         :param product_name:
 
-        :return: Product
-            Product info. First hit.
+        :return:
         """
         # Replace spaces to hexadecimal
         product_name = product_name.replace(' ', '%20')
