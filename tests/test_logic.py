@@ -4,11 +4,10 @@ from stockx_wrapper.stockx import Stockx
 def main():
     stockx = Stockx()
 
-    data = stockx.search_products('Jordan 1 low elephan')
-    stockx.search_products_new_api('Jordan 1 low elephan')
-    data = stockx.get_product_specific_size(product_id=data['id'], size='9')
-    stockx.get_product_data(product_id=data['id'], country='ES', currency='EUR', output_keys=['market'])
-    stockx.get_product_price_data(product_id=data['id'], country='ES', currency='EUR')
+    product = stockx.products.search_products('Jordan 1 low elephan')
+    product_size = product.get_specific_size(size='9')
+    price_chart = product_size.prices.get_price_chart_data(country='ES', currency='EUR')
+    prices_sold = product_size.prices.get_price_sold_data(number_of_items=510, country='ES', currency='EUR')
 
 
 if __name__ == "__main__":
