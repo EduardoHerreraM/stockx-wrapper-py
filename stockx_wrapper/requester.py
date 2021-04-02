@@ -42,3 +42,6 @@ class Requester:
         response = requests.post(url, headers=self.headers, params=params, json=body)
         data = json.loads(response.content)
         return data
+
+
+requester = Requester()

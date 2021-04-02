@@ -1,20 +1,19 @@
 import datetime
 
 from stockx_wrapper import settings as st
-from stockx_wrapper.requester import Requester
+from stockx_wrapper.requester import requester
 
 
 class Prices:
 
-    def __init__(self, requester):
-        self.requester = requester
+    def __init__(self, product_id):
+        self.id = product_id
 
-    def get_product_price_data(self, product_id, start_date='all', end_date=datetime.date.today().strftime('%Y-%m-%d'),
+    def get_product_price_data(self, start_date='all', end_date=datetime.date.today().strftime('%Y-%m-%d'),
                                intervals=100, country='US', currency='USD'):
         """
         Get product price chart. Average price over time.
 
-        :param product_id: str
         :param start_date: str, optional
             Has to be 'all' or 'YYYY-mm-dd' format.
         :param end_date: str, optional
@@ -30,7 +29,7 @@ class Prices:
 
         """
 
-        url = f'{st.GET_PRODUCT}/{product_id}/chart'
+        url = f'{st.GET_PRODUCT}/{self.id}/chart'
         params = {
             'start_date': start_date,
             'end_date': end_date,
@@ -38,7 +37,7 @@ class Prices:
             'currency': currency,
             'country': country
         }
-        data = self.requester.get(url=url, params=params)
+        data = requester.get(url=url, params=params)
 
         if not data:
             return None

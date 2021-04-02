@@ -1,15 +1,12 @@
 from stockx_wrapper import settings as st
-from stockx_wrapper.products.prices import Prices
+from stockx_wrapper.products.product import Product
+from stockx_wrapper.requester import requester
 
 
 class Products:
 
-    def __init__(self, requester):
-
-        self.requester = requester
-        self.prices = Prices(requester=self.requester)
-
-    def get_product_data(self, product_id, country='US', currency='USD', output_keys=None):
+    @staticmethod
+    def get_product_data(product_id, country='US', currency='USD'):
         """
         Get product data by product id.
 
@@ -18,8 +15,6 @@ class Products:
             Country for focusing market information.
         :param currency: str, optional
             Currency to get. Tested with 'USD' and 'EUR'.
-        :param output_keys: list, optional
-            List of strings. If not empty, return dict will contain just these keys.
 
         :return: dict
             Json format. Product info.
@@ -32,48 +27,23 @@ class Products:
             'currency': currency,
             'country': country
         }
-        data = self.requester.get(url=url, params=params)
-        product = data.get('Product')
+        data = requester.get(url=url, params=params)
+        _product = data.get('Product')
 
-        if not product:
+        if not _product:
             return None
 
-        if not output_keys:
-            return product
+        return Product(product_data=_product)
 
-        return_data = {}
-
-        for key in output_keys:
-            return_data[key] = product.get(key)
-
-        return return_data
-
-    def get_product_specific_size(self, product_id, size):
-        """
-        Get child product from product id with specified size in US size localization.
-
-        :param product_id: str
-        :param size: str
-
-        :return: dict
-            Json format. Product info with specified size.
-        """
-
-        # get parent product
-        parent_product = self.get_product_data(product_id)
-
-        # iterate its children until found one that matches asked size
-        for child_id, child_data in parent_product['children'].items():
-            if child_data['shoeSize'] == size:
-                return child_data
-
-        return None
-
-    def search_products(self, product_name):
+    def search_products(self, product_name, country='US', currency='USD'):
         """
         Search by product name.
 
         :param product_name: str
+        :param country: str, optional
+            Country for focusing market information.
+        :param currency: str, optional
+            Currency to get. Tested with 'USD' and 'EUR'.
 
         :return: dict
             First hit
@@ -89,16 +59,19 @@ class Products:
             '_search': product_name,
             'dataType': 'product'
         }
-        data = self.requester.get(url=url, params=params)
+        data = requester.get(url=url, params=params)
         products = data.get('Products')
 
         if products:
             # Return first hit
-            return data['Products'][0]
+            product_data = data['Products'][0]
+            _product = self.get_product_data(product_id=product_data['id'], country=country, currency=currency)
+            return _product
 
         return None
 
-    def search_products_new_api(self, product_name):
+    @staticmethod
+    def search_products_new_api(product_name):
         """
         Uses new API from Algolia. NOT WORKING FOR NOW.
 
@@ -113,11 +86,11 @@ class Products:
             'params': f'query={product_name}&facets=*&filters='
         }
 
-        data = self.requester.post(url=st.ALGOLIA_URL, body=body)
+        data = requester.post(url=st.ALGOLIA_URL, body=body)
         products = data.get('Products')
 
         if products:
             # Return first hit
-            return data['Products'][0]
+            return Product(product_data=data['Products'][0])
 
         return None
