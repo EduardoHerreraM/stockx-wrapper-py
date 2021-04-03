@@ -39,7 +39,13 @@ class Requester:
         :return:
         """
 
-        response = requests.post(url, headers=self.headers, params=params, json=body)
+        algolia_headers = {
+            'x-algolia-api-key': 'YjBiNWI5Mjc3OTdiYTEzZTk0ZGM2YThlMDlmMjY4YTYwOWM2MWIwMGQ3MjJiMTUwYjExNGRiNjliNGNmNzIwOXZhbGlkVW50aWw9MTYxNzQ4NjQyNA==',
+            'x-algolia-application-id': 'XW7SBCT9V6'
+        }
+        algolia_headers.update(self.headers)
+
+        response = requests.post(url, headers=algolia_headers, params=params, json=body)
         data = json.loads(response.content)
         return data
 

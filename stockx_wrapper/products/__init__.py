@@ -80,11 +80,12 @@ class Products:
         :return: Product
             Product info. First hit.
         """
-        # Replace spaces to hexadecimal
-        product_name = product_name.replace(' ', '%20')
 
         body = {
-            'params': f'query={product_name}&facets=*&filters='
+            'query': product_name,
+            'facets': '*',
+            'filters': '',
+            'hitsPerPage': 5000
         }
 
         data = requester.post(url=st.ALGOLIA_URL, body=body)
