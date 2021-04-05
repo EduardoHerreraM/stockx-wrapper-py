@@ -21,7 +21,7 @@ class Products:
         """
 
         # Format url and get data
-        url = f'{st.GET_PRODUCT}/{product_id}'
+        url = f'{st.API_URL}/{st.GET_PRODUCT}/{product_id}'
         params = {
             'includes': 'market',
             'currency': currency,
@@ -50,7 +50,7 @@ class Products:
         """
 
         # Format url and get data
-        url = st.SEARCH_PRODUCTS
+        url = f'{st.API_URL}/{st.SEARCH_PRODUCTS}'
         params = {
             'page': '1',
             '_search': product_name,

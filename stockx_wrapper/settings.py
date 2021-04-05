@@ -6,10 +6,16 @@ ALGOLIA_URL = (
 )
 
 # End points
-GET_PRODUCT = f'{API_URL}/products'
-SEARCH_PRODUCTS = f'{API_URL}/browse'
+GET_PRODUCT = 'products'
+SEARCH_PRODUCTS = 'browse'
 CHART_DATA = 'chart'
 SOLD_DATA = 'activity'
+
+# Algolia headers
+ALGOLIA_HEADERS = {
+    'x-algolia-api-key': 'ZmQ1YmUxNWI0ZTRhMTQzNTYyOGQ3ZDliYzZlMjIxM2Q0MTAzZDdhZGM2NGUzOTA5NjI3MGE4MDZlZGQyZmVjNHZhbGlkVW50aWw9MTYxNzY1MDAzMA==',
+    'x-algolia-application-id': 'XW7SBCT9V6'
+}
 
 # Limits
 SOLD_DATA_LIMIT = 250

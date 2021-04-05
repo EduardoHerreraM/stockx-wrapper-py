@@ -1,6 +1,8 @@
 import json
 import requests
 
+from stockx_wrapper.settings import ALGOLIA_HEADERS
+
 
 class Requester:
     def __init__(self):
@@ -39,13 +41,9 @@ class Requester:
         :return:
         """
 
-        algolia_headers = {
-            'x-algolia-api-key': 'ZmQ1YmUxNWI0ZTRhMTQzNTYyOGQ3ZDliYzZlMjIxM2Q0MTAzZDdhZGM2NGUzOTA5NjI3MGE4MDZlZGQyZmVjNHZhbGlkVW50aWw9MTYxNzY1MDAzMA==',
-            'x-algolia-application-id': 'XW7SBCT9V6'
-        }
-        algolia_headers.update(self.headers)
+        _headers = {**self.headers, **ALGOLIA_HEADERS}
 
-        response = requests.post(url, headers=algolia_headers, params=params, json=body)
+        response = requests.post(url, headers=_headers, params=params, json=body)
         data = json.loads(response.content)
         return data
 
