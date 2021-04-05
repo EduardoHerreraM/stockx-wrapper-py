@@ -49,9 +49,6 @@ class Products:
             Product info. First hit.
         """
 
-        # Replace spaces to hexadecimal
-        product_name = product_name.replace(' ', '%20')
-
         # Format url and get data
         url = st.SEARCH_PRODUCTS
         params = {
@@ -64,7 +61,7 @@ class Products:
 
         if products:
             # Return first hit
-            product_data = data['Products'][0]
+            product_data = products[0]
             _product = self.get_product_data(product_id=product_data['id'], country=country, currency=currency)
             return _product
 
