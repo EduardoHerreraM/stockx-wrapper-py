@@ -40,7 +40,7 @@ class Requester:
         """
 
         algolia_headers = {
-            'x-algolia-api-key': 'YjBiNWI5Mjc3OTdiYTEzZTk0ZGM2YThlMDlmMjY4YTYwOWM2MWIwMGQ3MjJiMTUwYjExNGRiNjliNGNmNzIwOXZhbGlkVW50aWw9MTYxNzQ4NjQyNA==',
+            'x-algolia-api-key': 'ZmQ1YmUxNWI0ZTRhMTQzNTYyOGQ3ZDliYzZlMjIxM2Q0MTAzZDdhZGM2NGUzOTA5NjI3MGE4MDZlZGQyZmVjNHZhbGlkVW50aWw9MTYxNzY1MDAzMA==',
             'x-algolia-application-id': 'XW7SBCT9V6'
         }
         algolia_headers.update(self.headers)

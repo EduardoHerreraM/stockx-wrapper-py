@@ -70,12 +70,15 @@ class Products:
 
         return None
 
-    @staticmethod
-    def search_products_new_api(product_name):
+    def search_products_new_api(self, product_name, country='US', currency='USD'):
         """
-        Uses new API from Algolia. NOT WORKING FOR NOW.
+        Uses new API from Algolia.
 
-        :param product_name:
+        :param product_name: str
+        :param country: str, optional
+            Country for focusing market information.
+        :param currency: str, optional
+            Currency to get. Tested with 'USD' and 'EUR'.
 
         :return: Product
             Product info. First hit.
@@ -84,15 +87,16 @@ class Products:
         body = {
             'query': product_name,
             'facets': '*',
-            'filters': '',
-            'hitsPerPage': 5000
+            'filters': ''
         }
 
         data = requester.post(url=st.ALGOLIA_URL, body=body)
-        products = data.get('Products')
+        products = data.get('hits')
 
         if products:
             # Return first hit
-            return Product(product_data=data['Products'][0])
+            product_data = products[0]
+            _product = self.get_product_data(product_id=product_data['id'], country=country, currency=currency)
+            return _product
 
         return None
