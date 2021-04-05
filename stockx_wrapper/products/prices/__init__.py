@@ -29,7 +29,7 @@ class Prices:
 
         """
 
-        url = f'{st.GET_PRODUCT}/{self.id}/{st.CHART_DATA}'
+        url = f'{st.API_URL}/{st.GET_PRODUCT}/{self.id}/{st.CHART_DATA}'
         params = {
             'start_date': start_date,
             'end_date': end_date,
@@ -67,7 +67,7 @@ class Prices:
 
         _number_of_items = min(number_of_items, st.SOLD_DATA_LIMIT)
 
-        url = f'{st.GET_PRODUCT}/{self.id}/{st.SOLD_DATA}'
+        url = f'{st.API_URL}/{st.GET_PRODUCT}/{self.id}/{st.SOLD_DATA}'
         params = {
             'state': st.SOLD_STATE,
             'country': country,

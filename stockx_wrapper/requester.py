@@ -1,6 +1,8 @@
 import json
 import requests
 
+from stockx_wrapper.settings import ALGOLIA_HEADERS
+
 
 class Requester:
     def __init__(self):
@@ -39,7 +41,9 @@ class Requester:
         :return:
         """
 
-        response = requests.post(url, headers=self.headers, params=params, json=body)
+        _headers = {**self.headers, **ALGOLIA_HEADERS}
+
+        response = requests.post(url, headers=_headers, params=params, json=body)
         data = json.loads(response.content)
         return data
 
