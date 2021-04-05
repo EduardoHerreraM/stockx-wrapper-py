@@ -30,7 +30,10 @@ class Product:
             Product data.
         """
 
-        child_data = next((child for child in self.children.values() if child['shoeSize'] == size), None)
+        if self.children:
+            child_data = next((child for child in self.children.values() if child['shoeSize'] == size), None)
 
-        if child_data:
-            return Product(product_data=child_data)
+            if child_data:
+                return Product(product_data=child_data)
+
+        return None
