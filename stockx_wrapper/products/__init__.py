@@ -36,17 +36,26 @@ class Products:
 
         return None
 
-    def search_products(self, product_name, number_of_products=1, country='US', currency='USD', more_data=False):
+    def search_products(self, product_name, product_category=None, gender=None, shoe_size=None, country='US',
+                        currency='USD', tags=None, number_of_products=1, more_data=False):
         """
         Search by product name.
 
         :param product_name: str
-        :param number_of_products: int, optional
-            Number of hits to return.
+        :param product_category: str, optional
+            Specify category of product. For example, 'sneakers'.
+        :param gender: str, optional
+            Specify gender of the product. For example, 'women'.
+        :param shoe_size: int, optional
+            Specify size of the shoe if a sneaker is asked.
         :param country: str, optional
             Country for focusing market information.
         :param currency: str, optional
             Currency to get. Tested with 'USD' and 'EUR'.
+        :param tags: list of str, optional
+            Tags to focus the search. For example, 'air jordan'
+        :param number_of_products: int, optional
+            Number of hits to return.
         :param more_data: bool, optional
             If given, return data will be more exhaustive.
 
@@ -67,7 +76,13 @@ class Products:
             params = {
                 'page': page+1,
                 '_search': product_name,
-                'dataType': 'product'
+                '_tags': ','.join(tags) if tags else None,
+                'productCategory': product_category,
+                'gender': gender,
+                'shoeSize': shoe_size,
+                'currency': currency,
+                'country': country,
+                'dataType': 'product' if not product_category else None
             }
             data = requester.get(url=url, params=params)
             _products = data.get('Products')
