@@ -100,7 +100,7 @@ class Products:
             _products = data.get('Products')
 
             if not _products:
-                return None
+                break
 
             # Return first hit
             products.extend([self.get_product_data(product_id=product_data['id'], country=country, currency=currency)
@@ -142,7 +142,7 @@ class Products:
         products = data.get('hits')
 
         if not products:
-            return None
+            return []
 
         return [self.get_product_data(product_id=product_data['id'], country=country, currency=currency)
                 if more_data else
