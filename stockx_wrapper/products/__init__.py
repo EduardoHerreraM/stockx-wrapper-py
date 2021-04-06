@@ -36,17 +36,35 @@ class Products:
 
         return None
 
-    def search_products(self, product_name, number_of_products=1, country='US', currency='USD', more_data=False):
+    def search_products(self, product_name, product_category=None, gender=None, year=None, retail_price=None,
+                        shoe_size=None, country='US', currency='USD', market_lowest_ask=None, tags=None,
+                        number_of_products=1, more_data=False):
         """
         Search by product name.
 
         :param product_name: str
-        :param number_of_products: int, optional
-            Number of hits to return.
+        :param product_category: str, optional
+            Category of product. For example, 'sneakers'.
+        :param gender: str, optional
+            Gender of the product. For example, 'women'.
+        :param year: int, optional
+            Year of release.
+        :param retail_price: int, optional
+            Filter by retail price. For example,    'lte-100' (less equal than 100),
+                                                    'gte-200' (greater equal than 200),
+                                                    'range(200|300) (between 200 and 300)
+        :param shoe_size: int, optional
+            Size of the shoe if a sneaker is asked.
         :param country: str, optional
             Country for focusing market information.
         :param currency: str, optional
             Currency to get. Tested with 'USD' and 'EUR'.
+        :param market_lowest_ask: list of str, optional
+            Filter by market lowest ask. Follows same schema as retail_price.
+        :param tags: list of str, optional
+            Tags to focus the search. For example, 'air jordan'.
+        :param number_of_products: int, optional
+            Number of hits to return.
         :param more_data: bool, optional
             If given, return data will be more exhaustive.
 
@@ -67,13 +85,22 @@ class Products:
             params = {
                 'page': page+1,
                 '_search': product_name,
-                'dataType': 'product'
+                '_tags': ','.join(tags) if tags else None,
+                'productCategory': product_category,
+                'gender': gender,
+                'retailPrice': ','.join(retail_price) if retail_price else None,
+                'year': year,
+                'shoeSize': shoe_size,
+                'currency': currency,
+                'country': country,
+                'market.lowestAsk': ','.join(market_lowest_ask) if market_lowest_ask else None,
+                'dataType': 'product' if not product_category else None
             }
             data = requester.get(url=url, params=params)
             _products = data.get('Products')
 
             if not _products:
-                return None
+                break
 
             # Return first hit
             products.extend([self.get_product_data(product_id=product_data['id'], country=country, currency=currency)
@@ -115,7 +142,7 @@ class Products:
         products = data.get('hits')
 
         if not products:
-            return None
+            return []
 
         return [self.get_product_data(product_id=product_data['id'], country=country, currency=currency)
                 if more_data else
