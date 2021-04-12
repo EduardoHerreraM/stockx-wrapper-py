@@ -8,6 +8,7 @@ class Product:
         self.id = product_data.get('id', None)
         self.style_id = product_data.get('styleId', None)
         self.name = product_data.get('name', None)
+        self.full_name = product_data.get('title', None)
         self.description = product_data.get('description', None)
         self.brand = product_data.get('brand', None)
         self.retail_price = product_data.get('retailPrice', None)
