@@ -1,5 +1,6 @@
 import json
 import requests
+from requests.exceptions import HTTPError
 
 from stockx_wrapper.settings import ALGOLIA_HEADERS
 
@@ -27,6 +28,8 @@ class Requester:
             Json format
         """
         response = requests.get(url, headers=self.headers, params=params)
+        if response.status_code != 200:
+            raise HTTPError
         data = json.loads(response.content)
         return data
 
@@ -44,6 +47,8 @@ class Requester:
         _headers = {**self.headers, **ALGOLIA_HEADERS}
 
         response = requests.post(url, headers=_headers, params=params, json=body)
+        if response.status_code != 200:
+            raise HTTPError
         data = json.loads(response.content)
         return data
 
