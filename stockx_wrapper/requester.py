@@ -30,6 +30,8 @@ class Requester:
         response = requests.get(url, headers=self.headers, params=params)
         if response.status_code != 200:
             raise HTTPError
+        if not response.content:
+            return None
         data = json.loads(response.content)
         return data
 
@@ -49,6 +51,8 @@ class Requester:
         response = requests.post(url, headers=_headers, params=params, json=body)
         if response.status_code != 200:
             raise HTTPError
+        if not response.content:
+            return None
         data = json.loads(response.content)
         return data
 
