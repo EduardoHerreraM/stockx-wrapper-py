@@ -75,42 +75,36 @@ class Products:
         # Number of hits is limited by default
         products_to_fetch = min(number_of_products, st.SEARCH_PRODUCTS_OLD_API_HITS_LIMIT)
 
-        chunks = split_number_into_chunks(products_to_fetch, st.SEARCH_PRODUCTS_OLD_API_PRODUCTS_LIMIT)
+        # Format url and get data
+        url = f'{st.API_URL}/{st.SEARCH_PRODUCTS}'
+        params = {
+            'page': 1,
+            'resultsPerPage': products_to_fetch,
+            '_search': product_name,
+            '_tags': ','.join(tags) if tags else None,
+            'productCategory': product_category,
+            'gender': gender,
+            'retailPrice': ','.join(retail_price) if retail_price else None,
+            'year': year,
+            'shoeSize': shoe_size,
+            'currency': currency,
+            'country': country,
+            'market.lowestAsk': ','.join(market_lowest_ask) if market_lowest_ask else None,
+            'dataType': 'product' if not product_category else None
+        }
+        data = requester.get(url=url, params=params)
+        _products = data.get('Products')
 
-        products = []
-
-        for page, number_to_get in enumerate(chunks):
-            # Format url and get data
-            url = f'{st.API_URL}/{st.SEARCH_PRODUCTS}'
-            params = {
-                'page': page+1,
-                '_search': product_name,
-                '_tags': ','.join(tags) if tags else None,
-                'productCategory': product_category,
-                'gender': gender,
-                'retailPrice': ','.join(retail_price) if retail_price else None,
-                'year': year,
-                'shoeSize': shoe_size,
-                'currency': currency,
-                'country': country,
-                'market.lowestAsk': ','.join(market_lowest_ask) if market_lowest_ask else None,
-                'dataType': 'product' if not product_category else None
-            }
-            data = requester.get(url=url, params=params)
-            _products = data.get('Products')
-
-            if not _products:
-                break
-
-            # Return first hit
-            products.extend([self.get_product_data(product_id=product_data['id'], country=country, currency=currency)
-                             if more_data else
-                             Product(product_data=product_data)
-                             for product_data in _products[:number_to_get]])
+        # Fetch more data if needed
+        products = [self.get_product_data(product_id=product_data['id'], country=country, currency=currency)
+                    if more_data else
+                    Product(product_data=product_data)
+                    for product_data in _products]
 
         return products
 
-    def search_products_new_api(self, product_name, number_of_products=1, country='US', currency='USD', more_data=False):
+    def search_products_new_api(self, product_name, number_of_products=1, country='US', currency='USD',
+                                more_data=False):
         """
         Uses new API from Algolia.
 
